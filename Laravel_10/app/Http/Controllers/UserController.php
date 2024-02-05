@@ -40,7 +40,7 @@ class UserController extends Controller
             'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->username),
+            'password' => Hash::make($request->password),
         ];
 
         $user = User::create($data);
@@ -48,6 +48,33 @@ class UserController extends Controller
         Auth::login($user);
 
         return redirect('timeline');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return redirect('/');
+    }
+
+    public function login(Request $request)
+    {
+
+        // dd($request->input());
+        $email = User::where('email', $request->email)->first();
+        if (!$email) {
+            return back()->with('alert', 'Your email incorret,check your email!!');
+        }
+
+        if (!Hash::check($request->password, $email->password)) {
+            return back()->with('alert', 'Your password incorret,check your password!!');
+        }
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            return redirect('timeline');
+        } else {
+            return back();
+        }
     }
 
     /**

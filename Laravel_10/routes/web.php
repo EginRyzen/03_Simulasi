@@ -21,7 +21,9 @@ use App\Http\Controllers\UserController;
 
 
 Route::resource('/', UserController::class);
+Route::get('logout', [UserController::class, 'logout']);
+Route::post('login', [UserController::class, 'login']);
 
-// Route::group(['middleware' => ['auth']], function () {
-Route::resource('timeline', GaleryController::class);
-// });
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('timeline', GaleryController::class);
+});

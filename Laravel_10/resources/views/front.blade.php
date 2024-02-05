@@ -47,6 +47,41 @@
     <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#inputImage').change(function() {
+                var input = this;
+                var preview = $('#previewImage');
+
+                var reader = new FileReader();
+                reader.onload = function() {
+                    preview.attr('src', reader.result)
+                }
+
+                if (input.files.length > 0) {
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.attr('src', '');
+                }
+            });
+            $('[id^="inputUpdate"]').change(function() {
+                var input = this;
+                var itemId = input.id.replace('inputUpdate', '');
+                var preview = $('#previewUpdate' + itemId);
+
+                var reader = new FileReader();
+                reader.onload = function() {
+                    preview.attr('src', reader.result);
+                }
+
+                if (input.files.length > 0) {
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.attr('src', '');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

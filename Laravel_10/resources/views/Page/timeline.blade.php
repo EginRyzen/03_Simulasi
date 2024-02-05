@@ -15,6 +15,15 @@
                     </ol>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-3">
+                    @if (session('alert'))
+                        <div class="alert alert-danger">
+                            {{ Session('alert') }}
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div><!-- /.container-fluid -->
     </section>
 
@@ -27,102 +36,77 @@
                 <div class="col-md-12">
                     <!-- The time line -->
                     <div class="timeline">
-                        <!-- timeline time label -->
-                        <div class="time-label">
-                            <span class="bg-red">10 Feb. 2014</span>
-                        </div>
-                        <!-- /.timeline-label -->
                         <!-- timeline item -->
-                        <div>
-                            <i class="fas fa-envelope bg-blue"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> 12:05</span>
-                                <h3 class="timeline-header"><a href="#">Support Team</a> sent you an
-                                    email</h3>
-
-                                <div class="timeline-body">
-                                    Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                                    weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                                    jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                                    quora plaxo ideeli hulu weebly balihoo...
-                                </div>
-                                <div class="timeline-footer">
-                                    <a class="btn btn-primary btn-sm">Read more</a>
-                                    <a class="btn btn-danger btn-sm">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-                        <div>
-                            <i class="fas fa-user bg-green"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> 5 mins ago</span>
-                                <h3 class="timeline-header no-border"><a href="#">Sarah Young</a>
-                                    accepted your friend request</h3>
-                            </div>
-                        </div>
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-                        <div>
-                            <i class="fas fa-comments bg-yellow"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
-                                <h3 class="timeline-header"><a href="#">Jay White</a> commented on your
-                                    post</h3>
-                                <div class="timeline-body">
-                                    Take me to your leader!
-                                    Switzerland is small and neutral!
-                                    We are more like Germany, ambitious and misunderstood!
-                                </div>
-                                <div class="timeline-footer">
-                                    <a class="btn btn-warning btn-sm">View comment</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END timeline item -->
-                        <!-- timeline time label -->
-                        <div class="time-label">
-                            <span class="bg-green">3 Jan. 2014</span>
-                        </div>
-                        <!-- /.timeline-label -->
-                        <!-- timeline item -->
-                        <div>
-                            <i class="fa fa-camera bg-purple"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
-                                <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos
-                                </h3>
-                                <div class="timeline-body">
-                                    <img src="https://placehold.it/150x100" alt="...">
-                                    <img src="https://placehold.it/150x100" alt="...">
-                                    <img src="https://placehold.it/150x100" alt="...">
-                                    <img src="https://placehold.it/150x100" alt="...">
-                                    <img src="https://placehold.it/150x100" alt="...">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-                        <div>
-                            <i class="fas fa-video bg-maroon"></i>
-
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
-
-                                <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-
-                                <div class="timeline-body">
-                                    <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe class="embed-responsive-item"
-                                            src="https://www.youtube.com/embed/tMWkeBIohBs" allowfullscreen></iframe>
+                        @foreach ($foto as $item)
+                            <div>
+                                <i class="fas fa-envelope bg-blue"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i>
+                                        {{ $item->created_at->diffForHumans() }}</span>
+                                    <img class="d-block m-auto py-4" src="{{ asset('image/' . $item->foto) }}"
+                                        alt="" class="" height="500">
+                                    <div class="mx-5">
+                                        <h3 class="font-weight-bold">{{ $item->judul }}</h3>
+                                        <p>{{ $item->deskripsi }}</p>
+                                    </div>
+                                    <div class="mx-5 pb-4">
+                                        <a class="btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#modal-update{{ $item->id }}">Update</a>
+                                        <a href="{{ url('timeline/' . $item->id) }}" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Kamu Yakin Untuk Di Hapus??')">Delete</a>
                                     </div>
                                 </div>
-                                <div class="timeline-footer">
-                                    <a href="#" class="btn btn-sm bg-maroon">See comments</a>
+                                <div class="modal fade" id="modal-update{{ $item->id }}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Upload Modal</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form action="{{ url('timeline/' . $item->id) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @method('PUT')
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <input type="text" name="judul" value="{{ $item->judul }}"
+                                                            placeholder="Judul" required class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <textarea type="text" name="deskripsi" placeholder="Deskripsi" rows="5" required class="form-control">{{ $item->deskripsi }}</textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="file" name="foto"
+                                                            id="inputUpdate{{ $item->id }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @if ($item->foto)
+                                                            <img src="{{ asset('image/' . $item->foto) }}"
+                                                                id="previewUpdate{{ $item->id }}"
+                                                                style="width: 100%: heigth:150px; width:100px"
+                                                                alt="">
+                                                        @else
+                                                            <img id="previewUpdate{{ $item->id }}"
+                                                                style="width: 100%: heigth:150px; width:100px" />
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer justify-content-between">
+                                                    <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
                         <!-- END timeline item -->
                         <div>
                             <i class="fas fa-clock bg-gray"></i>
